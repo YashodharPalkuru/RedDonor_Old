@@ -16,15 +16,13 @@ import facebook4j.FacebookFactory;
 public class RestController{
  
 	@RequestMapping("/login.htm")
-	public String signin(HttpServletRequest request,
-		HttpServletResponse response) throws Exception {
+	public String signin(HttpServletRequest request , HttpServletResponse response) throws Exception {
 		Facebook facebook = new FacebookFactory().getInstance();
-        String appId = "";
-        String appSecret="";
+        String appId = "827202724017029";
+        String appSecret = "8bdc6372917fb927803528804329180e";
         facebook.setOAuthAppId(appId, appSecret);
         request.getSession().setAttribute("facebook", facebook);
         StringBuffer callbackURL = request.getRequestURL();
-        
         int index = callbackURL.lastIndexOf("/");
         System.out.println(callbackURL);
         callbackURL.replace(index, callbackURL.length(), "").append("/callback.htm");
@@ -39,9 +37,12 @@ public class RestController{
 		HttpServletResponse response) throws Exception {
 		Facebook facebook = (Facebook) request.getSession().getAttribute("facebook");
         String oauthCode = request.getParameter("code");
-        try {
+        try
+        {
             facebook.getOAuthAccessToken(oauthCode);
-        } catch (FacebookException e) {
+        }
+        catch (FacebookException e)
+        {
             throw new ServletException(e);
         }
 		return new ModelAndView("welcome", "msg","delete() method");
@@ -49,18 +50,35 @@ public class RestController{
 	}
  
 	@RequestMapping("/logout.htm")
-	public ModelAndView update(HttpServletRequest request,
+	public String logout(HttpServletRequest request,
 		HttpServletResponse response) throws Exception {
- 
-		return new ModelAndView(" ", " "," ");
+		 Facebook facebook = (Facebook) request.getSession().getAttribute("facebook");
+	        String accessToken = null;
+	        try
+	        {
+	        	accessToken = facebook.getOAuthAccessToken().getToken();
+	        }
+	        catch (Exception e)
+	        {
+	            throw new ServletException(e);
+	        }
+	        request.getSession().invalidate();
+
+	        // Log Out of the Facebook
+	        StringBuffer next = request.getRequestURL();
+	        int index = next.lastIndexOf("/");
+	        next.replace(index+1, next.length(), "");
+	        
+	        String redirectURL = "http://www.facebook.com/logout.php?next=" + next.toString() + "&access_token=" + accessToken;
+	        System.out.println(redirectURL);
+	        return "redirect:"+redirectURL;
  
 	}
  
 	@RequestMapping("/getUserDetails.htm")
-	public ModelAndView list(HttpServletRequest request,
-		HttpServletResponse response) throws Exception {
+	public ModelAndView list(HttpServletRequest request , HttpServletResponse response) throws Exception {
  
-		return new ModelAndView("welcome", "msg","");
+		return new ModelAndView("jsonView", "msg","msg");
  
 	}
  

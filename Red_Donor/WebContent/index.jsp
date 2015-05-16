@@ -12,7 +12,7 @@
 </tag:notloggedin>
 <tag:loggedin>
 <script>
-alert("hai");
+ location = "/Red_Donor/login.htm";
 </script>
 </tag:loggedin>
 </body>

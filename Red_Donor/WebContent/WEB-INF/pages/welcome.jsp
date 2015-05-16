@@ -13,7 +13,7 @@
     <textarea cols="80" rows="2" name="message"></textarea>
     <input type="submit" name="post" value="statuses" />
   </form>
-<a href="./logout">logout</a>
+<a href="/Red_Donor/logout.htm">logout</a>
 </tag:loggedin>
 </body>
 </html>
